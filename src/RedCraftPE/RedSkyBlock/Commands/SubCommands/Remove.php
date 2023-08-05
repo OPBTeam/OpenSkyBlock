@@ -11,9 +11,11 @@ use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 
 use CortexPE\Commando\args\TextArgument;
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 
 class Remove extends SBSubCommand
 {
+    use LoggerTrait;
 
     /**
      * @throws ArgumentOrderException
@@ -54,6 +56,7 @@ class Remove extends SBSubCommand
                             $message = $this->getMShop()->construct("REMOVED_FROM_ISLAND");
                             $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
                             $player->sendMessage($message);
+                            self::logSub("member", "Player " . $player->getName() . " has been removed from " . $island->getName());
                         }
                     } else {
 
@@ -72,9 +75,7 @@ class Remove extends SBSubCommand
                 $sender->sendMessage($message);
             }
         } else {
-
             $this->sendUsage();
-            return;
         }
     }
 }

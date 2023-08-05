@@ -9,9 +9,11 @@ use pocketmine\utils\TextFormat;
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 
 class Reset extends SBSubCommand
 {
+    use LoggerTrait;
 
     public function prepare(): void
     {
@@ -45,6 +47,7 @@ class Reset extends SBSubCommand
                     $spawn = $this->plugin->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn();
                     $player->teleport($spawn);
                 }
+                self::logSub("reset", "Reset island for " . $sender->getName() . " successfully");
             } else {
 
                 $timeLeft = gmdate("H:i:s", $resetCooldown - Time());

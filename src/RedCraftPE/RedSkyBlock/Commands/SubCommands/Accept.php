@@ -11,9 +11,10 @@ use RedCraftPE\RedSkyBlock\Island;
 
 use CortexPE\Commando\args\TextArgument;
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 
 class Accept extends SBSubCommand {
-
+    use LoggerTrait;
     /**
      * @throws ArgumentOrderException
      */
@@ -50,6 +51,7 @@ class Accept extends SBSubCommand {
             $message = $this->getMShop()->construct("JOINED_ISLAND");
             $message = str_replace("{NAME}", $sender->getName(), $message);
             $islandCreator->sendMessage($message);
+            self::logSub("member", "Player " . $sender->getName() . " has joined " . $island->getName());
           }
         } else {
 

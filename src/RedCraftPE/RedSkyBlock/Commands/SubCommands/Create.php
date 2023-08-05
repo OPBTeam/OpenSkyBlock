@@ -2,6 +2,7 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use JsonException;
 use pocketmine\block\RuntimeBlockStateRegistry;
 use pocketmine\command\CommandSender;
 use pocketmine\item\StringToItemParser;
@@ -12,12 +13,14 @@ use pocketmine\math\Vector3;
 use pocketmine\block\VanillaBlocks;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
 
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
 
 class Create extends SBSubCommand
 {
+    use LoggerTrait;
 
     public static Create $instance;
 
@@ -29,6 +32,9 @@ class Create extends SBSubCommand
         self::$instance = $this;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
         if (!$sender instanceof Player) {
@@ -169,12 +175,11 @@ class Create extends SBSubCommand
                                     if (file_put_contents($plugin->getDataFolder() . "../RedSkyBlock/Players/" . $senderName . ".json", json_encode($islandData)) !== false) {
 
                                         $message = $this->getMShop()->construct("ISLAND_CREATED");
-                                        $sender->sendMessage($message);
                                     } else {
 
                                         $message = $this->getMShop()->construct("FILE_CREATION_ERROR");
-                                        $sender->sendMessage($message);
                                     }
+                                    $sender->sendMessage($message);
                                 }, static fn() => null);
                             } else {
 
@@ -189,8 +194,8 @@ class Create extends SBSubCommand
                         $plugin->skyblock->set("Last Z", $lastZ);
                         $plugin->skyblock->save();
 
+                        self::logSub("create", $senderName . " created an island");
                     } else {
-
                         $message = $this->getMShop()->construct("ALREADY_CREATED_ISLAND");
                         $sender->sendMessage($message);
                     }

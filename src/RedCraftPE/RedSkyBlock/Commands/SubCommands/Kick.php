@@ -11,9 +11,11 @@ use RedCraftPE\RedSkyBlock\Island;
 
 use CortexPE\Commando\args\TextArgument;
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 
 class Kick extends SBSubCommand
 {
+    use LoggerTrait;
 
     /**
      * @throws ArgumentOrderException
@@ -124,6 +126,7 @@ class Kick extends SBSubCommand
 
                 $spawn = $this->plugin->getServer()->getWorldManager()->getDefaultWorld()->getSafeSpawn();
                 $player->teleport($spawn);
+                self::logSub("kick", "Kicked player " . $player->getName() . " from island " . $island->getName());
             } else {
 
                 $message = $this->getMShop()->construct("CANT_KICK");

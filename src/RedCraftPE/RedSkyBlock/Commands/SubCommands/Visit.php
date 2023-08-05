@@ -12,9 +12,11 @@ use RedCraftPE\RedSkyBlock\Island;
 
 use CortexPE\Commando\args\TextArgument;
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 
 class Visit extends SBSubCommand
 {
+    use LoggerTrait;
 
     /**
      * @throws ArgumentOrderException
@@ -50,10 +52,10 @@ class Visit extends SBSubCommand
                         $masterWorld = $this->plugin->islandManager->getMasterWorld();
                         $islandSpawn = $island->getSpawnPoint();
                         $sender->teleport(new Position($islandSpawn[0], $islandSpawn[1], $islandSpawn[2], $masterWorld));
-
                         $message = $this->getMShop()->construct("WELCOME_TO_ISLAND");
                         $message = str_replace("{ISLAND_NAME}", $islandName, $message);
                         $sender->sendMessage($message);
+                        self::logSub("visit", $sender->getName(). " has been visit " .$islandName);
                     } else {
 
                         $message = $this->getMShop()->construct("ISLAND_LOCKED");

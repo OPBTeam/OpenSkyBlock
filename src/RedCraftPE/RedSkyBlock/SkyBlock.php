@@ -2,17 +2,13 @@
 
 namespace RedCraftPE\RedSkyBlock;
 
-use pocketmine\block\BlockTypeIds;
-use pocketmine\block\RuntimeBlockStateRegistry;
-use pocketmine\block\VanillaBlocks;
-use pocketmine\data\bedrock\block\BlockLegacyMetadata;
-use pocketmine\item\StringToItemParser;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
 
 use RedCraftPE\RedSkyBlock\Commands\SBCommand;
+use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
 use RedCraftPE\RedSkyBlock\Utils\MessageConstructor;
 use RedCraftPE\RedSkyBlock\Utils\ConfigManager;
 use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
@@ -22,6 +18,7 @@ use RedCraftPE\RedSkyBlock\Tasks\AutoSaveIslands;
 class SkyBlock extends PluginBase
 {
     use SingletonTrait;
+    use LoggerTrait;
 
     public SkyblockListener $listener;
     public MessageConstructor $mShop;
@@ -35,6 +32,7 @@ class SkyBlock extends PluginBase
     public function onLoad(): void
     {
         self::setInstance($this);
+        self::initLogger();
     }
 
     public function onEnable(): void
