@@ -1,9 +1,14 @@
-name: RedSkyBlock
-author: RedCraftPE
+name: OpenSkyBlock
+authors:
+  - RedCraftPE
+  - Phuongaz
 version: 6.0.0-ALPHA
-api: 4.0.0
+api: 5.0.0
 main: RedCraftPE\RedSkyBlock\SkyBlock
 permissions:
+  redskyblock.command:
+    default: true
+    description: Skyblock command
   redskyblock.admin:
     default: op
     description: With this permission players will recieve access to all RedSkyBlock Admin commands.

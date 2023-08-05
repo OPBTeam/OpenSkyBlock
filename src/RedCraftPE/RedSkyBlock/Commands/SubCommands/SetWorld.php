@@ -2,6 +2,7 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
@@ -12,10 +13,10 @@ use CortexPE\Commando\args\RawStringArgument;
 
 class SetWorld extends SBSubCommand {
 
-  private $islandCount; //will use later for reconfiguration
-
-  protected function prepare(): void {
-
+    /**
+     * @throws ArgumentOrderException
+     */
+    protected function prepare(): void {
     $this->setPermission("redskyblock.admin;redskyblock.setworld");
     $this->registerArgument(0, new RawStringArgument("name", false));
   }
@@ -36,27 +37,21 @@ class SetWorld extends SBSubCommand {
           $plugin->skyblock->save();
 
           $message = $this->getMShop()->construct("WORLD_SET");
-          $message = str_replace("{WORLD}", $name, $message);
-          $sender->sendMessage($message);
-          return;
         } else {
 
           $message = $this->getMShop()->construct("NO_WORLD");
+        }
           $message = str_replace("{WORLD}", $name, $message);
           $sender->sendMessage($message);
-          return;
-        }
       } else {
 
         $message = $this->getMShop()->construct("NO_CHANGE");
         $message = str_replace("{WORLD}", $name, $message);
         $sender->sendMessage($message);
-        return;
       }
     } else {
 
       $this->sendUsage();
-      return;
     }
   }
 }

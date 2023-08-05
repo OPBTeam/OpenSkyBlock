@@ -2,8 +2,8 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 
@@ -13,7 +13,10 @@ use CortexPE\Commando\constraint\InGameRequiredConstraint;
 
 class Help extends SBSubCommand {
 
-  public function prepare(): void {
+    /**
+     * @throws ArgumentOrderException
+     */
+    public function prepare(): void {
 
     $this->addConstraint(new InGameRequiredConstraint($this));
     $this->setPermission("redskyblock.island");
@@ -57,12 +60,10 @@ class Help extends SBSubCommand {
         $message = str_replace("{USAGE}", $commandUsage, $message);
         $message = str_replace("{PERMISSIONS}", $commandPermissions, $message);
         $message = str_replace("{ALIASES}", $commandAliases, $message);
-        $sender->sendMessage($message);
       } else {
 
         $message = $this->getMShop()->construct("NO_SUCH_COMMAND");
         $message = str_replace("{COMMAND}", $commandName, $message);
-        $sender->sendMessage($message);
       }
     } else {
 
@@ -100,7 +101,7 @@ class Help extends SBSubCommand {
       $message = str_replace("{COMMAND_FOUR}", $command4, $message);
       $message = str_replace("{COMMAND_FIVE}", $command5, $message);
       $message = str_replace("{COMMAND_SIX}", $command6, $message);
-      $sender->sendMessage($message);
     }
+      $sender->sendMessage($message);
   }
 }

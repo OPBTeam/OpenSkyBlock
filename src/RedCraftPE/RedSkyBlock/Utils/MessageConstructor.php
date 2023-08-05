@@ -8,8 +8,8 @@ use RedCraftPE\RedSkyBlock\SkyBlock;
 
 class MessageConstructor {
 
-  public static $instance;
-  public $plugin;
+  public static MessageConstructor $instance;
+  public SkyBlock $plugin;
   private $messages;
 
   public function __construct(SkyBlock $plugin) {
@@ -53,8 +53,7 @@ class MessageConstructor {
     $message = str_replace("{STRIKETHROUGH}", TextFormat::STRIKETHROUGH, $message);
     $message = str_replace("{UNDERLINE}", TextFormat::UNDERLINE, $message);
     $message = str_replace("{ITALIC}", TextFormat::ITALIC, $message);
-    $message = str_replace("{RESET}", TextFormat::RESET, $message);
-    return $message;
+      return str_replace("{RESET}", TextFormat::RESET, $message);
   }
 
   public function updateMessages(): void {
@@ -62,7 +61,7 @@ class MessageConstructor {
     $realString = (string) file_get_contents($this->plugin->getDataFolder() . "../RedSkyBlock/messages.yml");
     $realArray = yaml_parse($realString);
     $realKeys = array_keys($realArray);
-    if (substr($realString, -1) === "." || substr($realString, -1) === "-") $realString = substr($realString, 0, -3);
+    if (str_ends_with($realString, ".") || str_ends_with($realString, "-")) $realString = substr($realString, 0, -3);
 
     $reference = yaml_parse(stream_get_contents($this->plugin->getResource("messages.yml")));
     $referenceKeys = array_keys($reference);

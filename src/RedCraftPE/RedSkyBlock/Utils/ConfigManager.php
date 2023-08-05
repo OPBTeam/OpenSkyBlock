@@ -6,7 +6,7 @@ use RedCraftPE\RedSkyBlock\SkyBlock;
 
 class ConfigManager {
 
-  private $plugin;
+  private SkyBlock $plugin;
 
   public function __construct(SkyBlock $plugin) {
 

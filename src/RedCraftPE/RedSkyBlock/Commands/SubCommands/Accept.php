@@ -2,8 +2,8 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
 use pocketmine\player\Player;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
@@ -14,7 +14,10 @@ use CortexPE\Commando\constraint\InGameRequiredConstraint;
 
 class Accept extends SBSubCommand {
 
-  public function prepare(): void {
+    /**
+     * @throws ArgumentOrderException
+     */
+    public function prepare(): void {
 
     $this->addConstraint(new InGameRequiredConstraint($this));
     $this->setPermission("redskyblock.island");
@@ -22,7 +25,10 @@ class Accept extends SBSubCommand {
   }
 
   public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
-
+    if(!$sender instanceof Player) {
+        $sender->sendMessage("Use command in game");
+        return;
+    }
     $islandName = $args["island"];
     $island = $this->plugin->islandManager->getIslandByName($islandName);
     if ($island instanceof Island) {

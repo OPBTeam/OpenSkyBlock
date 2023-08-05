@@ -2,8 +2,8 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
 use pocketmine\player\Player;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
@@ -14,7 +14,10 @@ use CortexPE\Commando\args\TextArgument;
 
 class IncreaseSize extends SBSubCommand {
 
-  public function prepare(): void {
+    /**
+     * @throws ArgumentOrderException
+     */
+    public function prepare(): void {
 
     $this->setPermission("redskyblock.admin");
     $this->registerArgument(0, new IntegerArgument("amount", false));

@@ -4,13 +4,9 @@ namespace RedCraftPE\RedSkyBlock;
 
 use pocketmine\event\Listener;
 use pocketmine\utils\TextFormat;
-use pocketmine\math\Vector3;
 use pocketmine\world\Position;
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
 use pocketmine\player\Player;
-use pocketmine\inventory\Inventory;
-use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\item\StringToItemParser;
 
@@ -36,13 +32,10 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityItemPickupEvent;
 
 use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
-use RedCraftPE\RedSkyBlock\Island;
-use RedCraftPE\RedSkyBlock\Utils\HeadManager;
 
 class SkyblockListener implements Listener {
 
-  private $plugin;
-
+  private SkyBlock $plugin;
   public function __construct(SkyBlock $plugin) {
 
     $this->plugin = $plugin;
@@ -306,7 +299,7 @@ class SkyblockListener implements Listener {
 
     $plugin = $this->plugin;
     $masterWorld = $plugin->islandManager->getMasterWorld();
-    $block = $event->getBlock();
+    $block = $event->getBlockAgainst();
     $blockWorld = $block->getPosition()->world;
     $player = $event->getPlayer();
 
