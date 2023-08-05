@@ -2,6 +2,7 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -15,6 +16,9 @@ use CortexPE\Commando\constraint\InGameRequiredConstraint;
 class AddPermission extends SBSubCommand
 {
 
+    /**
+     * @throws ArgumentOrderException
+     */
     public function prepare(): void
     {
 
