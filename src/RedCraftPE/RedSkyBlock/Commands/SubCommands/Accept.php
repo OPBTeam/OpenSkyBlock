@@ -2,16 +2,14 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\args\TextArgument;
+use CortexPE\Commando\constraint\InGameRequiredConstraint;
 use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
-
-use CortexPE\Commando\args\TextArgument;
-use CortexPE\Commando\constraint\InGameRequiredConstraint;
-use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
+use RedCraftPE\RedSkyBlock\trait\LoggerTrait;
 
 class Accept extends SBSubCommand {
     use LoggerTrait;

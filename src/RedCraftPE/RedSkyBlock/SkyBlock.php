@@ -6,19 +6,20 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
-
 use RedCraftPE\RedSkyBlock\Commands\SBCommand;
-use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
-use RedCraftPE\RedSkyBlock\Utils\MessageConstructor;
-use RedCraftPE\RedSkyBlock\Utils\ConfigManager;
-use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
-use RedCraftPE\RedSkyBlock\Utils\IslandManager;
 use RedCraftPE\RedSkyBlock\Tasks\AutoSaveIslands;
+use RedCraftPE\RedSkyBlock\trait\AddonTrait;
+use RedCraftPE\RedSkyBlock\trait\LoggerTrait;
+use RedCraftPE\RedSkyBlock\Utils\ConfigManager;
+use RedCraftPE\RedSkyBlock\Utils\IslandManager;
+use RedCraftPE\RedSkyBlock\Utils\MessageConstructor;
+use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
 
 class SkyBlock extends PluginBase
 {
     use SingletonTrait;
     use LoggerTrait;
+    use AddonTrait;
 
     public SkyblockListener $listener;
     public MessageConstructor $mShop;
@@ -32,11 +33,12 @@ class SkyBlock extends PluginBase
     public function onLoad(): void
     {
         self::setInstance($this);
-        self::initLogger();
     }
 
     public function onEnable(): void
     {
+        self::initLogger();
+        $this->saveResource("addons\\FormAddon.php");
         //database setup:
         if (!file_exists($this->getDataFolder() . "../RedSkyBlock")) {
 
@@ -58,6 +60,13 @@ class SkyBlock extends PluginBase
 
             mkdir($this->getDataFolder() . "../RedSkyBlock/Players");
         }
+
+        if (!file_exists($this->getDataFolder() . "addons")) {
+
+            mkdir($this->getDataFolder() . "addons\\");
+        }
+
+        self::initAddon($this, $this->getDataFolder() . "addons");
 
         $this->skyblock = new Config($this->getDataFolder() . "../RedSkyBlock/skyblock.json", Config::JSON);
         $this->cfg = new Config($this->getDataFolder() . "../RedSkyBlock/config.yml", Config::YAML);
@@ -86,7 +95,6 @@ class SkyBlock extends PluginBase
         $this->getServer()->getCommandMap()->register("OpenSkyBlock", new SBCommand($this, "skyblock", "Open SkyBlock Command", ["sb"]));
 
         //Determine if a skyblock world is being used: -- from older RedSkyBlock will probably be udpated
-
         if ($this->skyblock->get("Master World") === false) {
             $message = $this->mShop->construct("NO_MASTER");
             $this->getLogger()->info($message);
@@ -125,4 +133,5 @@ class SkyBlock extends PluginBase
     {
         IslandManager::getInstance()->saveAllIslands();
     }
+
 }

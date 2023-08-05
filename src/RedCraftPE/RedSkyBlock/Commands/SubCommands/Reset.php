@@ -2,14 +2,11 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\constraint\InGameRequiredConstraint;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
-
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
-
-use CortexPE\Commando\constraint\InGameRequiredConstraint;
-use RedCraftPE\RedSkyBlock\Utils\LoggerTrait;
+use RedCraftPE\RedSkyBlock\trait\LoggerTrait;
 
 class Reset extends SBSubCommand
 {

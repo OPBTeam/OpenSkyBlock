@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace RedCraftPE\RedSkyBlock\Utils;
+namespace RedCraftPE\RedSkyBlock\trait;
 
 use phuongaz\easylog\EasyLog;
 use phuongaz\easylog\LogLevel;
