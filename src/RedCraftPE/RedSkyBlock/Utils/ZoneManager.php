@@ -12,6 +12,7 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 
 use RedCraftPE\RedSkyBlock\SkyBlock;
+use SplFixedArray;
 
 class ZoneManager
 {
@@ -36,29 +37,16 @@ class ZoneManager
 
     public function __construct(SkyBlock $plugin)
     {
-
         self::$plugin = $plugin;
         self::$zone = $plugin->skyblock->get("Zone", []);
-
-        self::$zoneStartPosition = $plugin->skyblock->get("Zone Position", []);
-        self::$zoneSize = $plugin->skyblock->get("Zone Size", []);
-        self::$zoneSpawn = $plugin->skyblock->get("Zone Spawn", []);
+        list(self::$zoneStartPosition, self::$zoneSize, self::$zoneSpawn) = [
+            $plugin->skyblock->get("Zone Position", []),
+            $plugin->skyblock->get("Zone Size", []),
+            $plugin->skyblock->get("Zone Spawn", [])
+        ];
 
         $zoneWorld = $plugin->skyblock->get("Zone World");
-        if ($zoneWorld === false) {
-
-            self::$zoneWorld = null;
-        } else {
-
-            if ($plugin->getServer()->getWorldManager()->loadWorld($zoneWorld)) {
-
-                self::$zoneWorld = $plugin->getServer()->getWorldManager()->getWorldByName($zoneWorld);
-            } else {
-
-                self::$zoneWorld = false;
-                $plugin->skyblock->set("Zone World", self::$zoneWorld);
-            }
-        }
+        self::$zoneWorld = $plugin->getServer()->getWorldManager()->loadWorld($zoneWorld) ? $plugin->getServer()->getWorldManager()->getWorldByName($zoneWorld) : null;
 
         self::$zoneShovel = VanillaItems::WOODEN_SHOVEL();
         self::$zoneShovel->getNamedTag()->setByte("redskyblock", 1);
@@ -67,61 +55,60 @@ class ZoneManager
         self::$spawnFeather = VanillaItems::FEATHER();
         self::$spawnFeather->getNamedTag()->setByte("redskyblock", 1);
         self::$spawnFeather->setCustomName(TextFormat::OBFUSCATED . "s" . TextFormat::RESET . TextFormat::WHITE . " Spawn Feather " . TextFormat::RESET . TextFormat::OBFUSCATED . TextFormat::WHITE . "s");
+
     }
 
+    /**
+     * @throws JsonException
+     */
     public static function createZone(): void
     {
-        $pos1 = self::$pos1;
-        $pos2 = self::$pos2;
-        $spawnPosition = self::$spawnPosition;
-        $plugin = self::$plugin;
-        $cSpawnVals = $plugin->skyblock->get("CSpawnVals", []);
+        $cSpawnVals = self::$plugin->skyblock->get("CSpawnVals", []);
 
-        $zoneX = [$pos1->x, $pos2->x];
-        $zoneY = [$pos1->y, $pos2->y];
-        $zoneZ = [$pos1->z, $pos2->z];
+        $zoneX = [self::$pos1->x, self::$pos2->x];
+        $zoneY = [self::$pos1->y, self::$pos2->y];
+        $zoneZ = [self::$pos1->z, self::$pos2->z];
 
         self::$zoneStartPosition = [min($zoneX), min($zoneY), min($zoneZ)];
         self::$zoneSize = [max($zoneX) - min($zoneX), max($zoneY) - min($zoneY), max($zoneZ) - min($zoneZ)];
 
-        //calculate spawn finding values relative to the position of the selected spawn within the island zone
-        //$islandHeight = self::$zoneSize[1];
-
-        $cSpawnVals[0] = $spawnPosition->x - self::$zoneStartPosition[0];
-        $cSpawnVals[1] = $spawnPosition->y - self::$zoneStartPosition[1] + 2; // + 2 to account for player height
-        $cSpawnVals[2] = $spawnPosition->z - self::$zoneStartPosition[2];
-        $plugin->skyblock->set("CSpawnVals", $cSpawnVals);
+        $cSpawnVals[0] = self::$spawnPosition->x - self::$zoneStartPosition[0];
+        $cSpawnVals[1] = self::$spawnPosition->y - self::$zoneStartPosition[1] + 2; // + 2 to account for player height
+        $cSpawnVals[2] = self::$spawnPosition->z - self::$zoneStartPosition[2];
+        self::$plugin->skyblock->set("CSpawnVals", $cSpawnVals);
 
         self::updateZone();
     }
 
+    /**
+     * @throws JsonException
+     */
     public static function updateZone(): void
     {
-
         self::clearZone();
-        $zone = self::$zone;
+        $zone = new SplFixedArray(self::$zoneSize[0] * self::$zoneSize[1] * self::$zoneSize[2]);
         $zoneWorld = self::$zoneWorld;
         $zoneStartPosition = self::$zoneStartPosition;
         $zoneSize = self::$zoneSize;
+        $index = 0;
 
         for ($x = $zoneStartPosition[0]; $x <= $zoneStartPosition[0] + $zoneSize[0]; $x++) {
-
             for ($y = $zoneStartPosition[1]; $y <= $zoneStartPosition[1] + $zoneSize[1]; $y++) {
-
                 for ($z = $zoneStartPosition[2]; $z <= $zoneStartPosition[2] + $zoneSize[2]; $z++) {
-
                     $block = $zoneWorld->getBlockAt((int)$x, (int)$y, (int)$z, true, false);
-                    $zone[] = $block->getStateId();
+                    $zone[$index] = $block->getStateId();
+                    $index++;
                 }
             }
         }
+
         self::$zone = $zone;
         self::saveZone();
+
     }
 
     public static function getZone(): array
     {
-
         return self::$zone;
     }
 
@@ -130,11 +117,9 @@ class ZoneManager
      */
     public static function saveZone(): void
     {
-
         $plugin = self::$plugin;
         $zone = self::$zone;
         if (self::$zoneSpawn === []) {
-
             $spawnPosition = self::$spawnPosition;
             self::$zoneSpawn = [round($spawnPosition->x), round($spawnPosition->y), round($spawnPosition->z)];
         }
@@ -157,7 +142,6 @@ class ZoneManager
 
     public static function clearZoneTools(Player $player): void
     {
-
         $playerInv = $player->getInventory();
         $invContents = $playerInv->getContents();
 

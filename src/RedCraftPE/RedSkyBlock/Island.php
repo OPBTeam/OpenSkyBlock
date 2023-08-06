@@ -263,10 +263,9 @@ class Island
     public function acceptInvite(Player $player): bool
     {
         $playerName = strtolower($player->getName());
-        if (in_array($playerName, $this->invited)) {
+        if (array_key_exists($playerName, $this->invited)) {
             $this->addMember($playerName);
-            $index = array_search($playerName, $this->invited);
-            unset($this->invited[$index]);
+            unset($this->invited[$playerName]);
             return true;
         } else {
             return false;
@@ -337,39 +336,31 @@ class Island
 
     public function removePermission(string $rank, string $permission): bool
     {
-        if (in_array($permission, self::MEMBER_PERMISSIONS)) {
-            if (array_key_exists($rank, $this->permissions)) {
-                if (in_array($permission, $this->permissions[$rank])) {
-                    $index = array_search($permission, $this->permissions[$rank]);
-                    unset($this->permissions[$rank][$index]);
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
+        if (!in_array($permission, self::MEMBER_PERMISSIONS)) {
             return false;
         }
+
+        if (array_key_exists($rank, $this->permissions) && in_array($permission, $this->permissions[$rank])) {
+            $index = array_search($permission, $this->permissions[$rank]);
+            unset($this->permissions[$rank][$index]);
+            return true;
+        }
+
+        return false;
     }
 
     public function addPermission(string $rank, string $permission): bool
     {
-        if (in_array($permission, self::MEMBER_PERMISSIONS)) {
-            if (array_key_exists($rank, $this->permissions)) {
-                if (!in_array($permission, $this->permissions[$rank])) {
-                    $this->permissions[$rank][] = $permission;
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
+        if (!in_array($permission, self::MEMBER_PERMISSIONS)) {
             return false;
         }
+
+        if (array_key_exists($rank, $this->permissions) && !in_array($permission, $this->permissions[$rank])) {
+            $this->permissions[$rank][] = $permission;
+            return true;
+        }
+
+        return false;
     }
 
     public function getXP(): int
@@ -411,8 +402,8 @@ class Island
         //formula for getting xp required for a level = (level/x)^y
 
         $xpGap = SkyBlock::getInstance()->cfg->get("XP Gap");
-        if ($xpGap <= 0) $xpGap = 0.01;
         $difficulty = SkyBlock::getInstance()->cfg->get("LevelUp Difficulty");
+        if ($xpGap <= 0) $xpGap = 0.01;
         if ($difficulty <= 0) $difficulty = 0.01;
 
         $currentLevel = floor($xpGap * exp(log($experience) / $difficulty));
@@ -424,10 +415,9 @@ class Island
 
     public function getXPNeeded(int $experience): int
     {
-
         $xpGap = SkyBlock::getInstance()->cfg->get("XP Gap");
-        if ($xpGap <= 0) $xpGap = 0.01;
         $difficulty = SkyBlock::getInstance()->cfg->get("LevelUp Difficulty");
+        if ($xpGap <= 0) $xpGap = 0.01;
         if ($difficulty <= 0) $difficulty = 0.01;
 
         $currentLevel = $this->calculateLevel($experience);

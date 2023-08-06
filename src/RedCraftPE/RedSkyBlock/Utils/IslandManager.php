@@ -232,25 +232,16 @@ class IslandManager
 
         $masterWorldName = $this->plugin->skyblock->get("Master World");
         $masterWorld = $this->plugin->getServer()->getWorldManager()->getWorldByName($masterWorldName);
-        if ($masterWorld instanceof World) {
 
-            if ($masterWorld->isLoaded()) {
-
-                return $masterWorld;
-            } else {
-
-                if ($this->plugin->getServer()->getWorldManager()->loadWorld($masterWorldName)) {
-
-                    return $masterWorld;
-                } else {
-
-                    return null;
-                }
-            }
-        } else {
-
-            return null;
+        if ($masterWorld instanceof World && $masterWorld->isLoaded()) {
+            return $masterWorld;
         }
+
+        if ($this->plugin->getServer()->getWorldManager()->loadWorld($masterWorldName)) {
+            return $masterWorld;
+        }
+
+        return null;
     }
 
     public function isOnIsland(Player $player, Island $island): bool
@@ -258,39 +249,33 @@ class IslandManager
 
         $playerPos = $player->getPosition();
         $islandCenter = $island->getIslandCenter();
-        $centerX = $islandCenter[0];
-        $centerZ = $islandCenter[1];
         $islandSize = $island->getSize();
         $halfSize = $islandSize / 2;
         $masterWorld = $this->getMasterWorld();
         $playerWorld = $player->getWorld();
-
         if ($playerWorld === $masterWorld) {
+            $centerX = $islandCenter[0];
+            $centerZ = $islandCenter[1];
 
-            if (($playerPos->x > $centerX - $halfSize && $playerPos->z > $centerZ - $halfSize) && ($playerPos->x < $centerX + $halfSize && $playerPos->z < $centerZ + $halfSize)) {
-
+            if (
+                $playerPos->x > $centerX - $halfSize && $playerPos->x < $centerX + $halfSize &&
+                $playerPos->z > $centerZ - $halfSize && $playerPos->z < $centerZ + $halfSize
+            ) {
                 return true;
-            } else {
-
-                return false;
             }
-        } else {
-
-            return false;
         }
+        return false;
+
     }
 
     public function getIslandAtPlayer(Player $player): ?Island
     {
-
         $foundIsland = null;
         $playerWorld = $player->getWorld();
         $masterWorld = $this->getMasterWorld();
 
         if ($playerWorld === $masterWorld) {
-
             foreach ($this->islands as $island) {
-
                 $islandSize = $island->getSize();
                 $halfSize = $islandSize / 2;
                 $islandCenter = $island->getIslandCenter();
@@ -300,95 +285,78 @@ class IslandManager
                 $playerX = $player->getPosition()->x;
                 $playerZ = $player->getPosition()->z;
 
-                if (($playerX > $centerX - $halfSize && $playerZ > $centerZ - $halfSize) && ($playerX < $centerX + $halfSize && $playerZ < $centerZ + $halfSize)) {
-
+                if (
+                    $playerX > $centerX - $halfSize && $playerX < $centerX + $halfSize &&
+                    $playerZ > $centerZ - $halfSize && $playerZ < $centerZ + $halfSize
+                ) {
                     $foundIsland = $island;
+                    break; // Found the island, no need to continue searching
                 }
             }
         }
+
         return $foundIsland;
     }
 
     public function getIslandAtBlock(Block $block): ?Island
     {
-
-        $foundIsland = null;
         $blockWorld = $block->getPosition()->world;
         $masterWorld = $this->getMasterWorld();
 
         if ($masterWorld === $blockWorld) {
-
             foreach ($this->islands as $island) {
-
-                $islandSize = $island->getSize();
-                $halfSize = $islandSize / 2;
-                $islandCenter = $island->getIslandCenter();
-                $centerX = $islandCenter[0];
-                $centerZ = $islandCenter[1];
+                list($centerX, $centerZ) = $island->getIslandCenter();
+                $halfSize = $island->getSize() / 2;
 
                 $blockX = $block->getPosition()->x;
                 $blockZ = $block->getPosition()->z;
 
                 if (($blockX > $centerX - $halfSize && $blockZ > $centerZ - $halfSize) && ($blockX < $centerX + $halfSize && $blockZ < $centerZ + $halfSize)) {
-
-                    $foundIsland = $island;
+                    return $island;
                 }
             }
         }
-        return $foundIsland;
+        return null;
     }
 
     public function getPlayersAtIsland(Island $island): array
     {
-
         $onlinePlayers = $this->plugin->getServer()->getOnlinePlayers();
         $playersOnIsland = [];
-
-        $islandSize = $island->getSize();
-        $halfSize = $islandSize / 2;
-        $islandCenter = $island->getIslandCenter();
-        $centerX = $islandCenter[0];
-        $centerZ = $islandCenter[1];
+        list($centerX, $centerZ) = $island->getIslandCenter();
+        $halfSize = $island->getSize() / 2;
         $masterWorld = $this->getMasterWorld();
 
         foreach ($onlinePlayers as $player) {
-
             $playerX = $player->getPosition()->x;
             $playerZ = $player->getPosition()->z;
             $playerWorld = $player->getWorld();
 
-            if ($playerWorld->getFolderName() === $masterWorld->getFolderName()) {
-
-                if (($playerX > $centerX - $halfSize && $playerZ > $centerZ - $halfSize) && ($playerX < $centerX + $halfSize && $playerZ < $centerZ + $halfSize)) {
-
-                    $playersOnIsland[] = $player->getName();
-                }
+            if ($playerWorld->getFolderName() === $masterWorld->getFolderName() &&
+                $playerX > $centerX - $halfSize && $playerX < $centerX + $halfSize &&
+                $playerZ > $centerZ - $halfSize && $playerZ < $centerZ + $halfSize) {
+                $playersOnIsland[] = $player->getName();
             }
         }
         return $playersOnIsland;
     }
 
+
     public function getIslandRank(Island $island): ?int
     {
-
         $valueArray = [];
-
         foreach ($this->islands as $creator => $isle) {
-
-            $value = $isle->getValue();
-            $valueArray[$creator] = $value;
+            $valueArray[$creator] = $isle->getValue();
         }
 
         arsort($valueArray);
-        if (isset($valueArray[$island->getCreator()])) {
 
-            $rank = array_search($island->getCreator(), array_keys($valueArray)) + 1; // + 1 because arrays are 0 indexed
-            return $rank;
-        } else {
+        $creator = $island->getCreator();
+        $rank = array_search($creator, array_keys(array_flip($valueArray))) + 1; // +1 because arrays are 0-indexed
 
-            return null;
-        }
+        return $rank ?: null;
     }
+
 
     public function getTopIslands(): array
     {

@@ -39,31 +39,27 @@ class SkyBlock extends PluginBase
     {
         self::initLogger();
         $this->saveResource("addons\\FormAddon.php");
-        //database setup:
         if (!file_exists($this->getDataFolder() . "../RedSkyBlock")) {
-
             mkdir($this->getDataFolder() . "../RedSkyBlock");
         }
-        if (!file_exists($this->getDataFolder() . "../RedSkyBlock/skyblock.json")) {
+        $defaultFiles = [
+            "skyblock.json",
+            "config.yml",
+            "messages.yml",
+        ];
 
-            $this->saveResource("skyblock.json");
-        }
-        if (!file_exists($this->getDataFolder() . "../RedSkyBlock/config.yml")) {
-
-            $this->saveResource("config.yml");
-        }
-        if (!file_exists($this->getDataFolder() . "../RedSkyBlock/messages.yml")) {
-
-            $this->saveResource("messages.yml");
+        foreach ($defaultFiles as $file) {
+            $filePath = $this->getDataFolder() . "../RedSkyBlock/" . $file;
+            if (!file_exists($filePath)) {
+                $this->saveResource($file, false); // The second parameter is to overwrite if the file already exists
+            }
         }
         if (!file_exists($this->getDataFolder() . "../RedSkyBlock/Players")) {
-
             mkdir($this->getDataFolder() . "../RedSkyBlock/Players");
         }
 
         if (!file_exists($this->getDataFolder() . "addons")) {
-
-            mkdir($this->getDataFolder() . "addons\\");
+            mkdir($this->getDataFolder() . "addons");
         }
 
         self::initAddon($this, $this->getDataFolder() . "addons");
@@ -75,16 +71,11 @@ class SkyBlock extends PluginBase
         $this->cfg->reload();
         $this->messages->reload();
 
-        //register config manager:
         $this->configManager = new ConfigManager($this);
-        //register zone manager:
         $this->zoneManager = new ZoneManager($this);
-        //register island manager:
         $this->islandManager = new IslandManager($this);
         $this->islandManager->constructAllIslands();
-        //register message constructor:
         $this->mShop = new MessageConstructor($this);
-        //register listener for RedSkyBlock:
         $this->listener = new SkyblockListener($this);
 
         //begin autosave
@@ -94,34 +85,28 @@ class SkyBlock extends PluginBase
 
         $this->getServer()->getCommandMap()->register("OpenSkyBlock", new SBCommand($this, "skyblock", "Open SkyBlock Command", ["sb"]));
 
-        //Determine if a skyblock world is being used: -- from older RedSkyBlock will probably be udpated
         if ($this->skyblock->get("Master World") === false) {
             $message = $this->mShop->construct("NO_MASTER");
             $this->getLogger()->info($message);
         } else {
-
-            if ($this->getServer()->getWorldManager()->loadWorld($this->skyblock->get("Master World"))) {
-
-                $this->getServer()->getWorldManager()->loadWorld($this->skyblock->get("Master World"));
+            $masterWorldName = $this->skyblock->get("Master World");
+            if ($this->getServer()->getWorldManager()->loadWorld($masterWorldName)) {
+                $this->getServer()->getWorldManager()->loadWorld($masterWorldName);
                 if ($this->cfg->get("Nether Islands")) {
-
-                    $this->getServer()->getWorldManager()->loadWorld($this->skyblock->get("Master World") . "-Nether");
+                    $netherWorldName = $masterWorldName . "-Nether";
+                    $this->getServer()->getWorldManager()->loadWorld($netherWorldName);
                 }
             } else {
-
                 $message = $this->mShop->construct("LOAD_ERROR");
                 $this->getLogger()->info($message);
             }
-
-            $masterWorld = $this->getServer()->getWorldManager()->getWorldByName($this->skyblock->get("Master World"));
+            $masterWorld = $this->getServer()->getWorldManager()->getWorldByName($masterWorldName);
             if (!$masterWorld instanceof World) {
-
                 $message = $this->mShop->construct("MASTER_FAILED");
-                $message = str_replace("{MWORLD}", $this->skyblock->get("Master World"), $message);
+                $message = str_replace("{MWORLD}", $masterWorldName, $message);
                 $this->getLogger()->info($message);
                 $masterWorld = null;
             } else {
-
                 $message = $this->mShop->construct("MASTER_SUCCESS");
                 $message = str_replace("{MWORLD}", $masterWorld->getFolderName(), $message);
                 $this->getLogger()->info($message);
