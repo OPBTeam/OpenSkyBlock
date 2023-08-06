@@ -4,7 +4,7 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
+use pocketmine\player\Player;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
@@ -28,6 +28,10 @@ class Chat extends SBSubCommand
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
+        if(!$sender instanceof Player) {
+            $sender->sendMessage("Use command in game");
+            return;
+        }
 
         if (isset($args["island"])) {
 

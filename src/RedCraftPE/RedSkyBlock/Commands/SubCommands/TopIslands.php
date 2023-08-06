@@ -4,7 +4,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 
@@ -57,7 +56,7 @@ class TopIslands extends SBSubCommand
         for ($x = 0; $x < count($islandsOnPage); $x++) {
 
             $rank = $index + ($x + 1);
-            ${"position" . $x + 1} = "#{$rank}--" . $islandsOnPage[$x] . ": " . $topIslands[$islandsOnPage[$x]] . " value";
+            ${"position" . $x + 1} = "#$rank--" . $islandsOnPage[$x] . ": " . $topIslands[$islandsOnPage[$x]] . " value";
         }
 
         $message = $this->getMShop()->construct("TOP_ISLANDS");

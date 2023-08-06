@@ -4,7 +4,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
@@ -55,35 +54,30 @@ class Unlock extends SBSubCommand
                     if ($island->unlock()) {
 
                         $message = $this->getMShop()->construct("UNLOCKED");
-                        $sender->sendMessage($message);
                     } else {
 
                         $message = $this->getMShop()->construct("ALREADY_UNLOCKED");
-                        $sender->sendMessage($message);
                     }
                 } else {
 
                     $message = $this->getMShop()->construct("RANK_TOO_LOW");
                     $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-                    $sender->sendMessage($message);
                 }
             } else {
 
                 if ($island->unlock()) {
 
                     $message = $this->getMShop()->construct("UNLOCKED");
-                    $sender->sendMessage($message);
                 } else {
 
                     $message = $this->getMShop()->construct("ALREADY_UNLOCKED");
-                    $sender->sendMessage($message);
                 }
             }
         } else {
 
             $message = $this->getMShop()->construct("NOT_A_MEMBER_SELF");
             $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-            $sender->sendMessage($message);
         }
+        $sender->sendMessage($message);
     }
 }

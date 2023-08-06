@@ -3,6 +3,7 @@
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use pocketmine\command\CommandSender;
+use pocketmine\item\Item;
 use pocketmine\player\Player;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
@@ -13,8 +14,8 @@ use CortexPE\Commando\constraint\InGameRequiredConstraint;
 class ZoneTools extends SBSubCommand
 {
 
-    private $zoneShovel;
-    private $spawnFeather;
+    private Item $zoneShovel;
+    private Item $spawnFeather;
 
     public function prepare(): void
     {
@@ -33,7 +34,6 @@ class ZoneTools extends SBSubCommand
         }
         $zoneKeeper = ZoneManager::getZoneKeeper();
         $senderInv = $sender->getInventory();
-        $senderContents = $senderInv->getContents();
         $zoneShovel = clone $this->zoneShovel;
         $spawnFeather = clone $this->spawnFeather;
 

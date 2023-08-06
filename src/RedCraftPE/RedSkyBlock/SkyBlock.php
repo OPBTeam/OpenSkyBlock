@@ -51,7 +51,7 @@ class SkyBlock extends PluginBase
         foreach ($defaultFiles as $file) {
             $filePath = $this->getDataFolder() . "../RedSkyBlock/" . $file;
             if (!file_exists($filePath)) {
-                $this->saveResource($file, false); // The second parameter is to overwrite if the file already exists
+                $this->saveResource($file); // The second parameter is to overwrite if the file already exists
             }
         }
         if (!file_exists($this->getDataFolder() . "../RedSkyBlock/Players")) {

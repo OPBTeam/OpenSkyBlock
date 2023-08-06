@@ -13,7 +13,7 @@ use CortexPE\Commando\BaseSubCommand;
 abstract class SBSubCommand extends BaseSubCommand
 {
 
-    protected $plugin;
+    protected SkyBlock $plugin;
 
     public function __construct(SkyBlock $plugin, string $name, string $description = "", array $aliases = [])
     {

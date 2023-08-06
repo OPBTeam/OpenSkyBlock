@@ -188,7 +188,6 @@ class SBCommand extends BaseCommand
             ["close"]
         ));
 
-
         $this->registerSubCommand(new Name(
             $this->plugin,
             "name",
@@ -319,7 +318,7 @@ class SBCommand extends BaseCommand
         ));
     }
 
-    public function onRun(CommandSender $sender, string $aliasused, array $args): void
+    public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
         if (isset($args["help"])) {
 

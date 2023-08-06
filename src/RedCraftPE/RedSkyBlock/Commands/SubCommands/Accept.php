@@ -11,62 +11,66 @@ use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
 use RedCraftPE\RedSkyBlock\trait\LoggerTrait;
 
-class Accept extends SBSubCommand {
+class Accept extends SBSubCommand
+{
     use LoggerTrait;
+
     /**
      * @throws ArgumentOrderException
      */
-    public function prepare(): void {
+    public function prepare(): void
+    {
 
-    $this->addConstraint(new InGameRequiredConstraint($this));
-    $this->setPermission("redskyblock.island");
-    $this->registerArgument(0, new TextArgument("island", false));
-  }
-
-  public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
-    if(!$sender instanceof Player) {
-        $sender->sendMessage("Use command in game");
-        return;
+        $this->addConstraint(new InGameRequiredConstraint($this));
+        $this->setPermission("redskyblock.island");
+        $this->registerArgument(0, new TextArgument("island", false));
     }
-    $islandName = $args["island"];
-    $island = $this->plugin->islandManager->getIslandByName($islandName);
-    if ($island instanceof Island) {
 
-      $members = $island->getMembers();
-      $memberCount = count($members);
-      $memberLimit = (int) $this->plugin->cfg->get("Member Limit");
-      if ($memberLimit > $memberCount) {
+    public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
+    {
+        if (!$sender instanceof Player) {
+            $sender->sendMessage("Use command in game");
+            return;
+        }
+        $islandName = $args["island"];
+        $island = $this->plugin->islandManager->getIslandByName($islandName);
+        if ($island instanceof Island) {
 
-        if ($island->acceptInvite($sender)) {
+            $members = $island->getMembers();
+            $memberCount = count($members);
+            $memberLimit = (int)$this->plugin->cfg->get("Member Limit");
+            if ($memberLimit > $memberCount) {
 
-          $message = $this->getMShop()->construct("ACCEPTED_INVITE");
-          $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-          $sender->sendMessage($message);
+                if ($island->acceptInvite($sender)) {
 
-          $islandCreator = $this->plugin->getServer()->getPlayerExact($island->getCreator());
-          if ($islandCreator instanceof Player) {
+                    $message = $this->getMShop()->construct("ACCEPTED_INVITE");
+                    $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
+                    $sender->sendMessage($message);
 
-            $message = $this->getMShop()->construct("JOINED_ISLAND");
-            $message = str_replace("{NAME}", $sender->getName(), $message);
-            $islandCreator->sendMessage($message);
-            self::logSub("member", "Player " . $sender->getName() . " has joined " . $island->getName());
-          }
+                    $islandCreator = $this->plugin->getServer()->getPlayerExact($island->getCreator());
+                    if ($islandCreator instanceof Player) {
+
+                        $message = $this->getMShop()->construct("JOINED_ISLAND");
+                        $message = str_replace("{NAME}", $sender->getName(), $message);
+                        $islandCreator->sendMessage($message);
+                        self::logSub("member", "Player " . $sender->getName() . " has joined " . $island->getName());
+                    }
+                } else {
+
+                    $message = $this->getMShop()->construct("NOT_INVITED");
+                    $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
+                    $sender->sendMessage($message);
+                }
+            } else {
+
+                $message = $this->getMShop()->construct("MEMBER_LIMIT_REACHED");
+                $sender->sendMessage($message);
+            }
         } else {
 
-          $message = $this->getMShop()->construct("NOT_INVITED");
-          $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-          $sender->sendMessage($message);
+            $message = $this->getMShop()->construct("COULD_NOT_FIND_ISLAND");
+            $message = str_replace("{ISLAND_NAME}", $islandName, $message);
+            $sender->sendMessage($message);
         }
-      } else {
-
-        $message = $this->getMShop()->construct("MEMBER_LIMIT_REACHED");
-        $sender->sendMessage($message);
-      }
-    } else {
-
-      $message = $this->getMShop()->construct("COULD_NOT_FIND_ISLAND");
-      $message = str_replace("{ISLAND_NAME}", $islandName, $message);
-      $sender->sendMessage($message);
     }
-  }
 }

@@ -70,7 +70,6 @@ class Create extends SBSubCommand
                         $stepChecker = $plugin->skyblock->get("Step Checker");
                         $lastX = $plugin->skyblock->get("Last X");
                         $lastZ = $plugin->skyblock->get("Last Z");
-                        $dir = 0;
 
                         if ($steps === -1) {
 
@@ -87,11 +86,8 @@ class Create extends SBSubCommand
                                     $stepChecker++;
                                 }
 
-                                $dir = intval($turns - ((floor($turns / 4)) * 4));
-                            } else {
-
-                                $dir = intval($turns - ((floor($turns / 4)) * 4));
                             }
+                            $dir = intval($turns - ((floor($turns / 4)) * 4));
                             if ($dir === 0) {
 
                                 $lastX += $interval;
@@ -124,7 +120,6 @@ class Create extends SBSubCommand
                         ];
 
                         $zone = ZoneManager::getZone();
-                        $zoneStartPosition = ZoneManager::getZoneStartPosition();
                         $zoneSize = ZoneManager::getZoneSize();
 
                         $chunkX = $lastX >> Chunk::COORD_BIT_SIZE;

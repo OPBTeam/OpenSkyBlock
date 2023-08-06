@@ -2,6 +2,7 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 
 use pocketmine\player\Player;
@@ -14,6 +15,9 @@ use CortexPE\Commando\constraint\InGameRequiredConstraint;
 class Setting extends SBSubCommand
 {
 
+    /**
+     * @throws ArgumentOrderException
+     */
     public function prepare(): void
     {
 
@@ -37,7 +41,6 @@ class Setting extends SBSubCommand
             if (array_key_exists($setting, $defaultSettings)) {
 
                 $bias = $args["value"];
-                $biasStringVal = "off";
                 if ($bias) {
 
                     $biasStringVal = "on";

@@ -5,7 +5,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
@@ -47,13 +46,12 @@ class Rank extends SBSubCommand
                 $message = str_replace("{NAME}", $islandName, $message);
                 $message = str_replace("{RANK}", $rank, $message);
                 $message = str_replace("{TOTAL_ISLANDS}", $islandCount, $message);
-                $sender->sendMessage($message);
             } else {
 
                 $message = $this->getMShop()->construct("COULD_NOT_FIND_ISLAND");
                 $message = str_replace("{ISLAND_NAME}", $islandName, $message);
-                $sender->sendMessage($message);
             }
+            $sender->sendMessage($message);
         } else {
 
             if ($this->checkIsland($sender)) {
@@ -64,12 +62,11 @@ class Rank extends SBSubCommand
                 $message = $this->getMShop()->construct("ISLAND_RANK_SELF");
                 $message = str_replace("{RANK}", $rank, $message);
                 $message = str_replace("{TOTAL_ISLANDS}", $islandCount, $message);
-                $sender->sendMessage($message);
             } else {
 
                 $message = $this->getMShop()->construct("NO_ISLAND");
-                $sender->sendMessage($message);
             }
+            $sender->sendMessage($message);
         }
     }
 }

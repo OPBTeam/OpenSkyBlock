@@ -4,7 +4,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
@@ -62,17 +61,14 @@ class SetSpawn extends SBSubCommand
                         $message = str_replace("{X}", round($senderPos->x), $message);
                         $message = str_replace("{Y}", round($senderPos->y), $message);
                         $message = str_replace("{Z}", round($senderPos->z), $message);
-                        $sender->sendMessage($message);
                     } else {
 
                         $message = $this->getMShop()->construct("NOT_ON_ISLAND");
-                        $sender->sendMessage($message);
                     }
                 } else {
 
                     $message = $this->getMShop()->construct("RANK_TOO_LOW");
                     $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-                    $sender->sendMessage($message);
                 }
             } else {
 
@@ -86,18 +82,16 @@ class SetSpawn extends SBSubCommand
                     $message = str_replace("{X}", round($senderPos->x), $message);
                     $message = str_replace("{Y}", round($senderPos->y), $message);
                     $message = str_replace("{Z}", round($senderPos->z), $message);
-                    $sender->sendMessage($message);
                 } else {
 
                     $message = $this->getMShop()->construct("NOT_ON_ISLAND");
-                    $sender->sendMessage($message);
                 }
             }
         } else {
 
             $message = $this->getMShop()->construct("NOT_A_MEMBER_SELF");
             $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-            $sender->sendMessage($message);
         }
+        $sender->sendMessage($message);
     }
 }

@@ -5,7 +5,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 use CortexPE\Commando\exception\ArgumentOrderException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Island;
@@ -65,19 +64,17 @@ class Rename extends SBSubCommand
 
                         $message = $this->getMShop()->construct("NAME_CHANGE");
                         $message = str_replace("{NAME}", $name, $message);
-                        $sender->sendMessage($message);
                     } else {
 
                         $message = $this->getMShop()->construct("ISLAND_NAME_EXISTS");
                         $message = str_replace("{ISLAND_NAME}", $name, $message);
-                        $sender->sendMessage($message);
                     }
                 } else {
 
                     $message = $this->getMShop()->construct("RANK_TOO_LOW");
                     $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-                    $sender->sendMessage($message);
                 }
+                $sender->sendMessage($message);
             } else {
 
                 if (!$this->plugin->islandManager->checkRepeatIslandName($name)) {
@@ -86,13 +83,12 @@ class Rename extends SBSubCommand
 
                     $message = $this->getMShop()->construct("NAME_CHANGE");
                     $message = str_replace("{NAME}", $name, $message);
-                    $sender->sendMessage($message);
                 } else {
 
                     $message = $this->getMShop()->construct("ISLAND_NAME_EXISTS");
                     $message = str_replace("{ISLAND_NAME}", $name, $message);
-                    $sender->sendMessage($message);
                 }
+                $sender->sendMessage($message);
             }
         } else {
 

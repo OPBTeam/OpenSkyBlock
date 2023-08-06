@@ -19,8 +19,6 @@ class ZoneManager
 
     private static SkyBlock $plugin;
 
-    private static $zone;
-
     private static Shovel $zoneShovel;
     private static Item $spawnFeather;
 
@@ -30,10 +28,12 @@ class ZoneManager
     private static Position|null $pos1 = null;
     private static Position|null $pos2 = null;
     private static ?Position $spawnPosition = null;
-    private static $zoneSpawn;
 
-    private static $zoneSize;
-    private static $zoneStartPosition;
+
+    private static SplFixedArray $zone;
+    private static array $zoneSpawn;
+    private static array $zoneSize;
+    private static array $zoneStartPosition;
 
     public function __construct(SkyBlock $plugin)
     {
@@ -136,8 +136,7 @@ class ZoneManager
 
     public static function clearZone(): void
     {
-
-        self::$zone = [];
+        self::$zone = new SplFixedArray();
     }
 
     public static function clearZoneTools(Player $player): void

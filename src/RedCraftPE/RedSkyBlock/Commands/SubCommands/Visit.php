@@ -29,12 +29,15 @@ class Visit extends SBSubCommand
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
-
+        if (!$sender instanceof Player) {
+            $sender->sendMessage("Use command in game");
+            return;
+        }
         if (isset($args["target"])) {
 
             $name = $args["target"];
             $island = $this->plugin->islandManager->getIslandByName($name);
-            $player = $this->plugin->getServer()->getPlayerByPrefix($name);
+            $player = $this->plugin->getServer()->getPlayerExact($name);
             if ($island instanceof Island) {
 
                 $islandName = $island->getName();
@@ -86,26 +89,22 @@ class Visit extends SBSubCommand
                             $sender->teleport(new Position($islandSpawn[0], $islandSpawn[1], $islandSpawn[2], $masterWorld));
 
                             $message = $this->getMShop()->construct("WELCOME_TO_ISLAND");
-                            $message = str_replace("{ISLAND_NAME}", $islandName, $message);
-                            $sender->sendMessage($message);
                         } else {
 
                             $message = $this->getMShop()->construct("ISLAND_LOCKED");
-                            $message = str_replace("{ISLAND_NAME}", $islandName, $message);
-                            $sender->sendMessage($message);
                         }
+                        $message = str_replace("{ISLAND_NAME}", $islandName, $message);
                     } else {
 
                         $message = $this->getMShop()->construct("BANNED");
                         $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-                        $sender->sendMessage($message);
                     }
                 } else {
 
                     $message = $this->getMShop()->construct("PLAYER_HAS_NO_ISLAND");
                     $message = str_replace("{NAME}", $player->getName(), $message);
-                    $sender->sendMessage($message);
                 }
+                $sender->sendMessage($message);
             } else {
 
                 $message = $this->getMShop()->construct("TARGET_NOT_FOUND");

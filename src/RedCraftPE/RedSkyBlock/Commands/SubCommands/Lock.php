@@ -54,29 +54,26 @@ class Lock extends SBSubCommand
                     if ($island->lock()) {
 
                         $message = $this->getMShop()->construct("LOCKED");
-                        $sender->sendMessage($message);
                     } else {
 
                         $message = $this->getMShop()->construct("ALREADY_LOCKED");
-                        $sender->sendMessage($message);
                     }
                 } else {
 
                     $message = $this->getMShop()->construct("RANK_TOO_LOW");
                     $message = str_replace("{ISLAND_NAME}", $island->getName(), $message);
-                    $sender->sendMessage($message);
                 }
+                $sender->sendMessage($message);
             } else {
 
                 if ($island->lock()) {
 
                     $message = $this->getMShop()->construct("LOCKED");
-                    $sender->sendMessage($message);
                 } else {
 
                     $message = $this->getMShop()->construct("ALREADY_LOCKED");
-                    $sender->sendMessage($message);
                 }
+                $sender->sendMessage($message);
             }
         } else {
 

@@ -2,8 +2,8 @@
 
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
+use JsonException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 use RedCraftPE\RedSkyBlock\Utils\ZoneManager;
@@ -20,6 +20,9 @@ class UpdateZone extends SBSubCommand
         $this->setPermission("redskyblock.admin;redskyblock.zone");
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
         if ($this->checkZone()) {

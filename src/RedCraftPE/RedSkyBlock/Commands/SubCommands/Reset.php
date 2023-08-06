@@ -3,6 +3,7 @@
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use CortexPE\Commando\constraint\InGameRequiredConstraint;
+use JsonException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
@@ -19,6 +20,9 @@ class Reset extends SBSubCommand
         $this->setPermission("redskyblock.island");
     }
 
+    /**
+     * @throws JsonException
+     */
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
         if (!$sender instanceof Player) {

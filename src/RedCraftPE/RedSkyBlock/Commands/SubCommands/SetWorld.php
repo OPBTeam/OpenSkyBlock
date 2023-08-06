@@ -3,9 +3,8 @@
 namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use CortexPE\Commando\exception\ArgumentOrderException;
+use JsonException;
 use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat;
-use pocketmine\world\World;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
 
@@ -21,7 +20,10 @@ class SetWorld extends SBSubCommand {
     $this->registerArgument(0, new RawStringArgument("name", false));
   }
 
-  public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
+    /**
+     * @throws JsonException
+     */
+    public function onRun(CommandSender $sender, string $aliasUsed, array $args): void {
 
     if (isset($args["name"])) {
 
@@ -41,14 +43,12 @@ class SetWorld extends SBSubCommand {
 
           $message = $this->getMShop()->construct("NO_WORLD");
         }
-          $message = str_replace("{WORLD}", $name, $message);
-          $sender->sendMessage($message);
       } else {
 
         $message = $this->getMShop()->construct("NO_CHANGE");
+      }
         $message = str_replace("{WORLD}", $name, $message);
         $sender->sendMessage($message);
-      }
     } else {
 
       $this->sendUsage();

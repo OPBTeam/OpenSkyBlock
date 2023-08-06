@@ -220,11 +220,8 @@ class IslandManager
         if (file_exists($filePath)) {
 
             unlink($filePath);
-            unset($island);
-        } else {
-
-            unset($island);
         }
+        unset($island);
     }
 
     public function getMasterWorld(): ?world
@@ -384,12 +381,11 @@ class IslandManager
             if ($name === strtolower($island->getName())) {
 
                 $bias = true;
-                break;
             } else {
 
                 $bias = false;
-                break;
             }
+            break;
         }
         return $bias;
     }
@@ -410,7 +406,6 @@ class IslandManager
 
     public function searchIslandChannels(string $playerName): ?Island
     {
-
         $playerName = strtolower($playerName);
         $possibleChannels = $this->getIslandsEmployedAt($playerName);
         $tuneToChannel = null;

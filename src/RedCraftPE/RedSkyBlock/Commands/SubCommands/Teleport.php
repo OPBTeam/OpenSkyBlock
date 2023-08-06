@@ -4,7 +4,6 @@ namespace RedCraftPE\RedSkyBlock\Commands\SubCommands;
 
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
 use pocketmine\world\Position;
 
 use RedCraftPE\RedSkyBlock\Commands\SBSubCommand;
